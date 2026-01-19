@@ -10,7 +10,7 @@ class m260119_183949_create_categories_table extends CDbMigration
 			'description' => 'text',
 			'created_at' => 'datetime NOT NULL',
 			'updated_at' => 'datetime NOT NULL',
-		));
+		), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 		
 		// Insertar categorías por defecto
 		$this->insert('categories', array(
