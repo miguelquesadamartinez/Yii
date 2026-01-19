@@ -57,10 +57,34 @@ class PostController extends Controller
         if(isset($_POST['Post']))
         {
             $model->attributes=$_POST['Post'];
-            if($model->save())
+            
+            // Handle image upload
+            $model->imageFile = CUploadedFile::getInstance($model,'imageFile');
+            
+            if($model->validate())
             {
-                Yii::app()->user->setFlash('success','Post creado exitosamente.');
-                $this->redirect(array('view','id'=>$model->id));
+                if($model->imageFile)
+                {
+                    // Create upload directory if it doesn't exist
+                    $uploadPath = Yii::app()->basePath.'/../uploads/posts/';
+                    if(!is_dir($uploadPath))
+                        mkdir($uploadPath, 0755, true);
+                    
+                    // Generate unique filename
+                    $fileName = time().'_'.uniqid().'.'.$model->imageFile->extensionName;
+                    
+                    // Save file
+                    if($model->imageFile->saveAs($uploadPath.$fileName))
+                    {
+                        $model->image = $fileName;
+                    }
+                }
+                
+                if($model->save(false))
+                {
+                    Yii::app()->user->setFlash('success','Post creado exitosamente.');
+                    $this->redirect(array('view','id'=>$model->id));
+                }
             }
         }
 
@@ -76,14 +100,59 @@ class PostController extends Controller
     public function actionUpdate($id)
     {
         $model=$this->loadModel($id);
+        $oldImage = $model->image;
 
         if(isset($_POST['Post']))
         {
             $model->attributes=$_POST['Post'];
-            if($model->save())
+            
+            // Check if user wants to delete current image
+            if(isset($_POST['Post']['deleteImage']) && $_POST['Post']['deleteImage'])
             {
-                Yii::app()->user->setFlash('success','Post actualizado exitosamente.');
-                $this->redirect(array('view','id'=>$model->id));
+                $model->deleteImageFile();
+                $oldImage = null;
+            }
+            
+            // Handle image upload
+            $model->imageFile = CUploadedFile::getInstance($model,'imageFile');
+            
+            if($model->validate())
+            {
+                if($model->imageFile)
+                {
+                    // Delete old image if exists
+                    if($oldImage)
+                    {
+                        $oldPath = Yii::app()->basePath.'/../uploads/posts/'.$oldImage;
+                        if(file_exists($oldPath))
+                            unlink($oldPath);
+                    }
+                    
+                    // Create upload directory if it doesn't exist
+                    $uploadPath = Yii::app()->basePath.'/../uploads/posts/';
+                    if(!is_dir($uploadPath))
+                        mkdir($uploadPath, 0755, true);
+                    
+                    // Generate unique filename
+                    $fileName = time().'_'.uniqid().'.'.$model->imageFile->extensionName;
+                    
+                    // Save file
+                    if($model->imageFile->saveAs($uploadPath.$fileName))
+                    {
+                        $model->image = $fileName;
+                    }
+                }
+                else if(!$model->deleteImage)
+                {
+                    // Restore old image if no new upload and not deleting
+                    $model->image = $oldImage;
+                }
+                
+                if($model->save(false))
+                {
+                    Yii::app()->user->setFlash('success','Post actualizado exitosamente.');
+                    $this->redirect(array('view','id'=>$model->id));
+                }
             }
         }
 
@@ -100,7 +169,17 @@ class PostController extends Controller
     {
         if(Yii::app()->request->isPostRequest)
         {
-            $this->loadModel($id)->delete();
+            $model = $this->loadModel($id);
+            
+            // Delete image if exists
+            if($model->image)
+            {
+                $imagePath = $model->getImagePath();
+                if(file_exists($imagePath))
+                    unlink($imagePath);
+            }
+            
+            $model->delete();
 
             if(!isset($_GET['ajax']))
             {
