@@ -29,6 +29,10 @@ $this->menu=array(
             'name'=>'status',
             'value'=>$model->getStatusText(),
         ),
+        array(
+            'name'=>'user_type_id',
+            'value'=>$model->userType ? $model->userType->name : '-',
+        ),
         'created_at',
         'updated_at',
     ),

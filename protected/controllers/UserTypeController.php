@@ -1,6 +1,6 @@
 <?php
 
-class UserController extends Controller
+class UserTypeController extends Controller
 {
     /**
      * @var string the default layout for the views.
@@ -19,8 +19,6 @@ class UserController extends Controller
 
     /**
      * Specifies the access control rules.
-     * This method is used by the 'accessControl' filter.
-     * @return array access control rules
      */
     public function accessRules()
     {
@@ -37,7 +35,6 @@ class UserController extends Controller
 
     /**
      * Displays a particular model.
-     * @param integer $id the ID of the model to be displayed
      */
     public function actionView($id)
     {
@@ -48,18 +45,17 @@ class UserController extends Controller
 
     /**
      * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionCreate()
     {
-        $model=new User('insert');
+        $model=new UserType;
 
-        if(isset($_POST['User']))
+        if(isset($_POST['UserType']))
         {
-            $model->attributes=$_POST['User'];
+            $model->attributes=$_POST['UserType'];
             if($model->save())
             {
-                Yii::app()->user->setFlash('success','Usuario creado exitosamente.');
+                Yii::app()->user->setFlash('success','Tipo de usuario creado exitosamente.');
                 $this->redirect(array('view','id'=>$model->id));
             }
         }
@@ -71,37 +67,19 @@ class UserController extends Controller
 
     /**
      * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
      */
     public function actionUpdate($id)
     {
         $model=$this->loadModel($id);
-        $model->scenario = 'update';
 
-        if(isset($_POST['User']))
+        if(isset($_POST['UserType']))
         {
-            // Store old password
-            $oldPassword = $model->password;
-            
-            $model->attributes=$_POST['User'];
-            
-            // If password is empty, restore old password
-            if(empty($model->password))
-            {
-                $model->password = $oldPassword;
-            }
-            
+            $model->attributes=$_POST['UserType'];
             if($model->save())
             {
-                Yii::app()->user->setFlash('success','Usuario actualizado exitosamente.');
+                Yii::app()->user->setFlash('success','Tipo de usuario actualizado exitosamente.');
                 $this->redirect(array('view','id'=>$model->id));
             }
-        }
-        else
-        {
-            // Clear password for form display
-            $model->password = '';
         }
 
         $this->render('update',array(
@@ -111,22 +89,23 @@ class UserController extends Controller
 
     /**
      * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
      */
     public function actionDelete($id)
     {
         if(Yii::app()->request->isPostRequest)
         {
-            // we only allow deletion via POST request
+            // Check if there are users with this type
+            $count = User::model()->countByAttributes(array('user_type_id'=>$id));
+            if($count > 0)
+            {
+                Yii::app()->user->setFlash('error', 'No se puede eliminar el tipo de usuario porque hay '.$count.' usuario(s) asociado(s).');
+                $this->redirect(array('view','id'=>$id));
+            }
+            
             $this->loadModel($id)->delete();
 
-            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
             if(!isset($_GET['ajax']))
-            {
-                Yii::app()->user->setFlash('success','Usuario eliminado exitosamente.');
                 $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
-            }
         }
         else
             throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
@@ -137,10 +116,10 @@ class UserController extends Controller
      */
     public function actionIndex()
     {
-        $model=new User('search');
+        $model=new UserType('search');
         $model->unsetAttributes();
-        if(isset($_GET['User']))
-            $model->attributes=$_GET['User'];
+        if(isset($_GET['UserType']))
+            $model->attributes=$_GET['UserType'];
 
         $this->render('index',array(
             'model'=>$model,
@@ -149,26 +128,21 @@ class UserController extends Controller
 
     /**
      * Returns the data model based on the primary key given in the GET variable.
-     * If the data model is not found, an HTTP exception will be raised.
-     * @param integer $id the ID of the model to be loaded
-     * @return User the loaded model
-     * @throws CHttpException
      */
     public function loadModel($id)
     {
-        $model=User::model()->findByPk($id);
+        $model=UserType::model()->findByPk($id);
         if($model===null)
-            throw new CHttpException(404,'The requested page does not exist.');
+            throw new CHttpException(404,'La página solicitada no existe.');
         return $model;
     }
 
     /**
      * Performs the AJAX validation.
-     * @param User $model the model to be validated
      */
     protected function performAjaxValidation($model)
     {
-        if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
+        if(isset($_POST['ajax']) && $_POST['ajax']==='user-type-form')
         {
             echo CActiveForm::validate($model);
             Yii::app()->end();

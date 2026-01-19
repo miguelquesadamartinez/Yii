@@ -11,6 +11,7 @@
  * @property string $first_name
  * @property string $last_name
  * @property integer $status
+ * @property integer $user_type_id
  * @property string $created_at
  * @property string $updated_at
  */
@@ -44,8 +45,9 @@ class User extends CActiveRecord
             array('first_name, last_name', 'length', 'max'=>128),
             array('status', 'numerical', 'integerOnly'=>true),
             array('status', 'in', 'range'=>array(0,1)),
+            array('user_type_id', 'numerical', 'integerOnly'=>true),
             array('created_at, updated_at', 'safe'),
-            array('id, username, email, first_name, last_name, status, created_at, updated_at', 'safe', 'on'=>'search'),
+            array('id, username, email, first_name, last_name, status, user_type_id, created_at, updated_at', 'safe', 'on'=>'search'),
         );
     }
 
@@ -54,7 +56,9 @@ class User extends CActiveRecord
      */
     public function relations()
     {
-        return array();
+        return array(
+            'userType' => array(self::BELONGS_TO, 'UserType', 'user_type_id'),
+        );
     }
 
     /**
@@ -71,6 +75,7 @@ class User extends CActiveRecord
             'first_name' => 'Nombre',
             'last_name' => 'Apellidos',
             'status' => 'Estado',
+            'user_type_id' => 'Tipo de Usuario',
             'created_at' => 'Fecha de Creación',
             'updated_at' => 'Última Actualización',
         );

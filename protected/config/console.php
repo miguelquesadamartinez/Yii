@@ -11,7 +11,7 @@ return array(
     // application components
     'components'=>array(
         'db'=>array(
-            'connectionString' => 'mysql:host=localhost;port=3307;dbname=yii_users',
+            'connectionString' => 'mysql:host=db;dbname=yii_users',
             'emulatePrepare' => true,
             'username' => 'yii_user',
             'password' => 'yii_password',

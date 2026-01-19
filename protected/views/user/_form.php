@@ -60,6 +60,12 @@
         <?php echo $form->error($model,'status'); ?>
     </div>
 
+    <div class="row">
+        <?php echo $form->labelEx($model,'user_type_id'); ?>
+        <?php echo $form->dropDownList($model,'user_type_id', UserType::getList(), array('prompt'=>'Seleccione un tipo...')); ?>
+        <?php echo $form->error($model,'user_type_id'); ?>
+    </div>
+
     <div class="row buttons">
         <?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Guardar'); ?>
     </div>
