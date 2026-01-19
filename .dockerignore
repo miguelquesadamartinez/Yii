@@ -1,0 +1,12 @@
+.git
+.gitignore
+.idea
+.vscode
+*.log
+vendor/
+node_modules/
+framework/
+protected/runtime/*
+!protected/runtime/.gitkeep
+assets/*
+!assets/.gitkeep
