@@ -29,7 +29,10 @@
 
     <div class="row">
         <?php echo $form->label($model,'password', array('required'=>$model->isNewRecord)); ?>
-        <?php echo $form->passwordField($model,'password',array('size'=>60,'maxlength'=>128,'value'=>'')); ?>
+        <div style="position: relative; display: inline-block; width: 100%;">
+            <?php echo $form->passwordField($model,'password',array('size'=>60,'maxlength'=>128,'value'=>'','id'=>'password-field','style'=>'width: calc(100% - 100px);')); ?>
+            <button type="button" onclick="togglePassword('password-field', this)" style="position: absolute; right: 0; top: 0; padding: 5px 10px;">Mostrar</button>
+        </div>
         <?php echo $form->error($model,'password'); ?>
         <?php if(!$model->isNewRecord): ?>
             <p class="hint">Dejar en blanco para mantener la contraseña actual</p>
@@ -38,9 +41,25 @@
 
     <div class="row">
         <?php echo $form->label($model,'password_repeat', array('required'=>$model->isNewRecord)); ?>
-        <?php echo $form->passwordField($model,'password_repeat',array('size'=>60,'maxlength'=>128,'value'=>'')); ?>
+        <div style="position: relative; display: inline-block; width: 100%;">
+            <?php echo $form->passwordField($model,'password_repeat',array('size'=>60,'maxlength'=>128,'value'=>'','id'=>'password-repeat-field','style'=>'width: calc(100% - 100px);')); ?>
+            <button type="button" onclick="togglePassword('password-repeat-field', this)" style="position: absolute; right: 0; top: 0; padding: 5px 10px;">Mostrar</button>
+        </div>
         <?php echo $form->error($model,'password_repeat'); ?>
     </div>
+
+<script>
+function togglePassword(fieldId, button) {
+    var field = document.getElementById(fieldId);
+    if (field.type === 'password') {
+        field.type = 'text';
+        button.textContent = 'Ocultar';
+    } else {
+        field.type = 'password';
+        button.textContent = 'Mostrar';
+    }
+}
+</script>
 
     <div class="row">
         <?php echo $form->labelEx($model,'first_name'); ?>
