@@ -116,17 +116,13 @@ class CategoryController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider=new CActiveDataProvider('Category', array(
-            'criteria'=>array(
-                'order'=>'name ASC',
-            ),
-            'pagination'=>array(
-                'pageSize'=>10,
-            ),
-        ));
+        $model=new Category('search');
+        $model->unsetAttributes();
+        if(isset($_GET['Category']))
+            $model->attributes=$_GET['Category'];
 
         $this->render('index',array(
-            'dataProvider'=>$dataProvider,
+            'model'=>$model,
         ));
     }
 

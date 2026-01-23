@@ -83,4 +83,29 @@ class Category extends CActiveRecord
         }
         return false;
     }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('id',$this->id);
+        $criteria->compare('name',$this->name,true);
+        $criteria->compare('description',$this->description,true);
+        $criteria->compare('created_at',$this->created_at,true);
+        $criteria->compare('updated_at',$this->updated_at,true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+            'sort'=>array(
+                'defaultOrder'=>'name ASC',
+            ),
+            'pagination'=>array(
+                'pageSize'=>10,
+            ),
+        ));
+    }
 }
