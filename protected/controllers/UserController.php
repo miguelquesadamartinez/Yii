@@ -81,16 +81,7 @@ class UserController extends Controller
 
         if(isset($_POST['User']))
         {
-            // Store old password
-            $oldPassword = $model->password;
-            
             $model->attributes=$_POST['User'];
-            
-            // If password is empty, restore old password
-            if(empty($model->password))
-            {
-                $model->password = $oldPassword;
-            }
             
             if($model->save())
             {
@@ -100,8 +91,9 @@ class UserController extends Controller
         }
         else
         {
-            // Clear password for form display
+            // Clear password fields for form display
             $model->password = '';
+            $model->password_repeat = '';
         }
 
         $this->render('update',array(

@@ -19,6 +19,7 @@ class User extends CActiveRecord
 {
     public $password_repeat;
     public $old_password;
+    private $_oldPassword;
 
     /**
      * @return string the associated database table name
@@ -26,6 +27,15 @@ class User extends CActiveRecord
     public function tableName()
     {
         return 'users';
+    }
+    
+    /**
+     * After find - store the original password
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        $this->_oldPassword = $this->password;
     }
 
     /**
@@ -39,16 +49,43 @@ class User extends CActiveRecord
             array('username', 'unique'),
             array('email', 'email'),
             array('email', 'unique'),
+            // Contraseña solo requerida al crear
             array('password', 'required', 'on'=>'insert'),
-            array('password', 'length', 'min'=>6, 'on'=>'insert,update'),
-            array('password_repeat', 'compare', 'compareAttribute'=>'password', 'on'=>'insert,update'),
+            array('password_repeat', 'required', 'on'=>'insert'),
+            // Validar en beforeValidate si hay contraseña
             array('first_name, last_name', 'length', 'max'=>128),
             array('status', 'numerical', 'integerOnly'=>true),
             array('status', 'in', 'range'=>array(0,1)),
             array('user_type_id', 'numerical', 'integerOnly'=>true),
-            array('created_at, updated_at', 'safe'),
+            array('created_at, updated_at, password, password_repeat', 'safe'),
             array('id, username, email, first_name, last_name, status, user_type_id, created_at, updated_at', 'safe', 'on'=>'search'),
         );
+    }
+    
+    /**
+     * Before validate
+     */
+    protected function beforeValidate()
+    {
+        if(parent::beforeValidate())
+        {
+            // Validar contraseña solo si se proporciona
+            if(!empty($this->password))
+            {
+                if(strlen($this->password) < 6)
+                {
+                    $this->addError('password', 'La contraseña debe tener al menos 6 caracteres.');
+                    return false;
+                }
+                if($this->password !== $this->password_repeat)
+                {
+                    $this->addError('password_repeat', 'Las contraseñas no coinciden.');
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -135,9 +172,14 @@ class User extends CActiveRecord
         if(parent::beforeSave())
         {
             // Hash password if it's changed
-            if($this->isNewRecord || !empty($this->password))
+            if(!empty($this->password))
             {
                 $this->password = md5($this->password);
+            }
+            else if(!$this->isNewRecord)
+            {
+                // Mantener la contraseña existente si no se proporciona una nueva
+                $this->password = $this->_oldPassword;
             }
 
             // Set timestamps

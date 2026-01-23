@@ -28,8 +28,8 @@
     </div>
 
     <div class="row">
-        <?php echo $form->labelEx($model,'password'); ?>
-        <?php echo $form->passwordField($model,'password',array('size'=>60,'maxlength'=>128)); ?>
+        <?php echo $form->label($model,'password', array('required'=>$model->isNewRecord)); ?>
+        <?php echo $form->passwordField($model,'password',array('size'=>60,'maxlength'=>128,'value'=>'')); ?>
         <?php echo $form->error($model,'password'); ?>
         <?php if(!$model->isNewRecord): ?>
             <p class="hint">Dejar en blanco para mantener la contraseña actual</p>
@@ -37,8 +37,8 @@
     </div>
 
     <div class="row">
-        <?php echo $form->labelEx($model,'password_repeat'); ?>
-        <?php echo $form->passwordField($model,'password_repeat',array('size'=>60,'maxlength'=>128)); ?>
+        <?php echo $form->label($model,'password_repeat', array('required'=>$model->isNewRecord)); ?>
+        <?php echo $form->passwordField($model,'password_repeat',array('size'=>60,'maxlength'=>128,'value'=>'')); ?>
         <?php echo $form->error($model,'password_repeat'); ?>
     </div>
 
