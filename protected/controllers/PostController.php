@@ -99,7 +99,7 @@ class PostController extends Controller
                 if($model->save(false))
                 {
                     Yii::app()->user->setFlash('success','Post creado exitosamente.');
-                    $this->redirect(array('view','id'=>$model->id));
+                    $this->redirect(array('view','slug'=>$model->slug));
                 }
             }
         }
@@ -167,7 +167,7 @@ class PostController extends Controller
                 if($model->save(false))
                 {
                     Yii::app()->user->setFlash('success','Post actualizado exitosamente.');
-                    $this->redirect(array('view','id'=>$model->id));
+                    $this->redirect(array('view','slug'=>$model->slug));
                 }
             }
         }
