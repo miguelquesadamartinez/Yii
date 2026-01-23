@@ -32,7 +32,7 @@ $this->menu=array(
 <?php if($model->posts): ?>
     <ul>
     <?php foreach($model->posts as $post): ?>
-        <li><?php echo CHtml::link(CHtml::encode($post->title), array('post/view', 'id'=>$post->id)); ?></li>
+        <li><?php echo CHtml::link(CHtml::encode($post->title), array('post/view', 'slug'=>$post->slug)); ?></li>
     <?php endforeach; ?>
     </ul>
 <?php else: ?>
