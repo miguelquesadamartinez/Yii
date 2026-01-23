@@ -12,11 +12,11 @@
     <?php endif; ?>
 
     <b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
-    <?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
+    <?php echo CHtml::link(CHtml::encode($data->id), array('view', 'slug'=>$data->slug)); ?>
     <br />
 
     <b><?php echo CHtml::encode($data->getAttributeLabel('title')); ?>:</b>
-    <?php echo CHtml::link(CHtml::encode($data->title), array('view', 'id'=>$data->id)); ?>
+    <?php echo CHtml::link(CHtml::encode($data->title), array('view', 'slug'=>$data->slug)); ?>
     <br />
 
     <b><?php echo CHtml::encode($data->getAttributeLabel('content')); ?>:</b>

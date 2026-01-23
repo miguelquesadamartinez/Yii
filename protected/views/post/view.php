@@ -28,6 +28,7 @@ $this->menu=array(
     'attributes'=>array(
         'id',
         'title',
+        'slug',
         'content:html',
         array(
             'name'=>'image',

@@ -38,6 +38,19 @@ return array(
             'urlFormat'=>'path',
             'showScriptName'=>true,
             'rules'=>array(
+                // Rutas para posts con slug
+                'posts'=>'post/index',
+                'post/crear'=>'post/create',
+                'post/editar/<id:\d+>'=>'post/update',
+                'post/<slug:[a-z0-9\-]+>'=>'post/view',
+                
+                // Rutas para categorías
+                'categorias'=>'category/index',
+                'categoria/crear'=>'category/create',
+                'categoria/editar/<id:\d+>'=>'category/update',
+                'categoria/<id:\d+>'=>'category/view',
+                
+                // Rutas genéricas
                 '<controller:\w+>/<id:\d+>'=>'<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
                 '<controller:\w+>/<action:\w+>'=>'<controller>/<action>',

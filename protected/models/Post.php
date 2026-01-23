@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'posts':
  * @property integer $id
  * @property string $title
+ * @property string $slug
  * @property string $content
  * @property string $image
  * @property integer $author_id
@@ -43,10 +44,13 @@ class Post extends CActiveRecord
         return array(
             array('title, content', 'required'),
             array('title', 'length', 'max'=>255),
+            array('slug', 'length', 'max'=>255),
+            array('slug', 'unique'),
+            array('slug', 'match', 'pattern'=>'/^[a-z0-9\-]+$/'),
             array('content', 'safe'),
             array('imageFile', 'file', 'types'=>'jpg, jpeg, png, gif', 'maxSize'=>1024*1024*5, 'allowEmpty'=>true),
-            array('image, deleteImage', 'safe'),
-            array('id, title, content, image, author_id, category_id, created_at, updated_at', 'safe', 'on'=>'search'),
+            array('image, deleteImage, slug', 'safe'),
+            array('id, title, slug, content, image, author_id, category_id, created_at, updated_at', 'safe', 'on'=>'search'),
         );
     }
 
@@ -68,6 +72,7 @@ class Post extends CActiveRecord
         return array(
             'id' => 'ID',
             'title' => 'Título',
+            'slug' => 'URL Amigable',
             'content' => 'Contenido',
             'image' => 'Imagen',
             'imageFile' => 'Imagen',
@@ -78,6 +83,50 @@ class Post extends CActiveRecord
         );
     }
 
+    /**
+     * Genera un slug desde el título
+     */
+    public function generateSlug()
+    {
+        $slug = $this->title;
+        
+        // Convertir a minúsculas
+        $slug = mb_strtolower($slug, 'UTF-8');
+        
+        // Reemplazar caracteres especiales
+        $slug = str_replace(
+            array('á','é','í','ó','ú','ñ','ü','à','è','ì','ò','ù'),
+            array('a','e','i','o','u','n','u','a','e','i','o','u'),
+            $slug
+        );
+        
+        // Reemplazar espacios y caracteres no válidos con guiones
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        
+        // Eliminar guiones al inicio y final
+        $slug = trim($slug, '-');
+        
+        // Verificar unicidad
+        $baseSlug = $slug;
+        $counter = 1;
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'slug=:slug';
+        $criteria->params = array(':slug'=>$slug);
+        
+        if(!$this->isNewRecord)
+            $criteria->addCondition('id!=:id');
+            $criteria->params[':id'] = $this->id;
+        
+        while(Post::model()->find($criteria))
+        {
+            $slug = $baseSlug.'-'.$counter;
+            $criteria->params[':slug'] = $slug;
+            $counter++;
+        }
+        
+        return $slug;
+    }
+    
     /**
      * This is invoked before the record is saved.
      * @return boolean whether the record should be saved.
@@ -91,6 +140,13 @@ class Post extends CActiveRecord
                 $this->created_at = new CDbExpression('NOW()');
                 $this->author_id = Yii::app()->user->id;
             }
+            
+            // Generar slug si está vacío
+            if(empty($this->slug))
+            {
+                $this->slug = $this->generateSlug();
+            }
+            
             $this->updated_at = new CDbExpression('NOW()');
             return true;
         }

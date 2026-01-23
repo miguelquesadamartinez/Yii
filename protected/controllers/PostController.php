@@ -36,13 +36,29 @@ class PostController extends Controller
     }
 
     /**
-     * Displays a particular model.
+     * Displays a particular model by slug or id.
+     * @param string $slug the slug of the model to be displayed
      * @param integer $id the ID of the model to be displayed
      */
-    public function actionView($id)
+    public function actionView($slug=null, $id=null)
     {
+        if($slug !== null)
+        {
+            $model = Post::model()->findByAttributes(array('slug'=>$slug));
+            if($model === null)
+                throw new CHttpException(404,'The requested page does not exist.');
+        }
+        else if($id !== null)
+        {
+            $model = $this->loadModel($id);
+        }
+        else
+        {
+            throw new CHttpException(400,'Invalid request.');
+        }
+        
         $this->render('view',array(
-            'model'=>$this->loadModel($id),
+            'model'=>$model,
         ));
     }
 
