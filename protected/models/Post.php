@@ -47,7 +47,8 @@ class Post extends CActiveRecord
             array('slug', 'length', 'max'=>255),
             array('slug', 'unique'),
             array('slug', 'match', 'pattern'=>'/^[a-z0-9\-]+$/'),
-            array('content', 'safe'),
+            array('category_id', 'numerical', 'integerOnly'=>true),
+            array('content, category_id', 'safe'),
             array('imageFile', 'file', 'types'=>'jpg, jpeg, png, gif', 'maxSize'=>1024*1024*5, 'allowEmpty'=>true),
             array('image, deleteImage, slug', 'safe'),
             array('id, title, slug, content, image, author_id, category_id, created_at, updated_at', 'safe', 'on'=>'search'),
@@ -117,7 +118,7 @@ class Post extends CActiveRecord
             $criteria->addCondition('id!=:id');
             $criteria->params[':id'] = $this->id;
         }
-        
+
         while(Post::model()->find($criteria))
         {
             $slug = $baseSlug.'-'.$counter;
