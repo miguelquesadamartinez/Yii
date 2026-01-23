@@ -113,9 +113,10 @@ class Post extends CActiveRecord
         $criteria->condition = 'slug=:slug';
         $criteria->params = array(':slug'=>$slug);
         
-        if(!$this->isNewRecord)
+        if(!$this->isNewRecord) {
             $criteria->addCondition('id!=:id');
             $criteria->params[':id'] = $this->id;
+        }
         
         while(Post::model()->find($criteria))
         {
