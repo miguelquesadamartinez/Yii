@@ -34,9 +34,11 @@ function attachGridFilters() {
         }, 300));
     });
     $('#category-grid .filters select').off('change.filter').on('change.filter', function(){
+        focusedElement = null;
         $('#category-grid').yiiGridView('update', {
             data: $('#category-grid .filters :input').serialize()
         });
+        return false;
     });
     if(focusedElement) {
         var elem = $('#category-grid .filters input[name=\"' + $(focusedElement).attr('name') + '\"]');

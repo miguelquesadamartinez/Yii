@@ -34,9 +34,11 @@ function attachGridFilters() {
         }, 300));
     });
     $('#user-grid .filters select').off('change.filter').on('change.filter', function(){
+        focusedElement = null;
         $('#user-grid').yiiGridView('update', {
             data: $('#user-grid .filters :input').serialize()
         });
+        return false;
     });
     if(focusedElement) {
         var elem = $('#user-grid .filters input[name=\"' + $(focusedElement).attr('name') + '\"]');

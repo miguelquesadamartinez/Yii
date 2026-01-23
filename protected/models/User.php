@@ -140,6 +140,7 @@ class User extends CActiveRecord
         $criteria->compare('first_name',$this->first_name,true);
         $criteria->compare('last_name',$this->last_name,true);
         $criteria->compare('status',$this->status);
+        $criteria->compare('user_type_id',$this->user_type_id);
         $criteria->compare('created_at',$this->created_at,true);
         $criteria->compare('updated_at',$this->updated_at,true);
 
