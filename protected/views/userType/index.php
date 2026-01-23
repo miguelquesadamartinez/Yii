@@ -14,10 +14,51 @@ $this->menu=array(
 
 <h1>Tipos de Usuario</h1>
 
+<?php
+Yii::app()->clientScript->registerScript('search', "
+var focusedElement = null;
+var cursorPosition = 0;
+function attachGridFilters() {
+    $('#user-type-grid .filters input[type=text]').off('keyup.filter focus.filter').on('focus.filter', function(){
+        focusedElement = this;
+    }).on('keyup.filter', function(){
+        var grid = $('#user-type-grid');
+        focusedElement = this;
+        cursorPosition = this.selectionStart;
+        if(grid.data('keyupTimeout')) {
+            clearTimeout(grid.data('keyupTimeout'));
+        }
+        grid.data('keyupTimeout', setTimeout(function(){
+            grid.yiiGridView('update', {
+                data: $('#user-type-grid .filters :input').serialize()
+            });
+        }, 300));
+    });
+    $('#user-type-grid .filters select').off('change.filter').on('change.filter', function(){
+        $('#user-type-grid').yiiGridView('update', {
+            data: $('#user-type-grid .filters :input').serialize()
+        });
+    });
+    if(focusedElement) {
+        var elem = $('#user-type-grid .filters input[name=\"' + $(focusedElement).attr('name') + '\"]');
+        if(elem.length) {
+            elem.focus();
+            if(elem[0].setSelectionRange && cursorPosition) {
+                elem[0].setSelectionRange(cursorPosition, cursorPosition);
+            }
+        }
+    }
+}
+attachGridFilters();
+", CClientScript::POS_READY);
+?>
+
 <?php $this->widget('zii.widgets.grid.CGridView', array(
     'id'=>'user-type-grid',
     'dataProvider'=>$model->search(),
     'filter'=>$model,
+    'enableSorting'=>true,
+    'afterAjaxUpdate'=>'function(id, data){ attachGridFilters(); }',
     'columns'=>array(
         'id',
         'name',
