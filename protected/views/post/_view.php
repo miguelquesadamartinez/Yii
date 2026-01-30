@@ -3,7 +3,10 @@
 /* @var $data Post */
 ?>
 
-<div class="view">
+<div class="view" style="cursor: pointer; transition: background-color 0.2s;" 
+     onclick="window.location.href='<?php echo $this->createUrl('view', array('slug'=>$data->slug)); ?>';"
+     onmouseover="this.style.backgroundColor='#f5f5f5';" 
+     onmouseout="this.style.backgroundColor='white';">
 
     <?php if($data->image): ?>
         <div style="float: left; margin-right: 15px; margin-bottom: 10px;">
@@ -12,11 +15,11 @@
     <?php endif; ?>
 
     <b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
-    <?php echo CHtml::link(CHtml::encode($data->id), array('view', 'slug'=>$data->slug)); ?>
+    <?php echo CHtml::encode($data->id); ?>
     <br />
 
     <b><?php echo CHtml::encode($data->getAttributeLabel('title')); ?>:</b>
-    <?php echo CHtml::link(CHtml::encode($data->title), array('view', 'slug'=>$data->slug)); ?>
+    <?php echo CHtml::encode($data->title); ?>
     <br />
 
     <b><?php echo CHtml::encode($data->getAttributeLabel('content')); ?>:</b>
