@@ -57,6 +57,12 @@ class PostController extends Controller
             throw new CHttpException(400,'Invalid request.');
         }
         
+        // Verificar que el usuario actual sea el autor del post
+        if($model->author_id != Yii::app()->user->id)
+        {
+            throw new CHttpException(403,'No tienes permiso para ver este post.');
+        }
+        
         $this->render('view',array(
             'model'=>$model,
         ));
@@ -116,6 +122,13 @@ class PostController extends Controller
     public function actionUpdate($id)
     {
         $model=$this->loadModel($id);
+        
+        // Verificar que el usuario actual sea el autor del post
+        if($model->author_id != Yii::app()->user->id)
+        {
+            throw new CHttpException(403,'No tienes permiso para editar este post.');
+        }
+        
         $oldImage = $model->image;
 
         if(isset($_POST['Post']))
@@ -187,6 +200,12 @@ class PostController extends Controller
         {
             $model = $this->loadModel($id);
             
+            // Verificar que el usuario actual sea el autor del post
+            if($model->author_id != Yii::app()->user->id)
+            {
+                throw new CHttpException(403,'No tienes permiso para eliminar este post.');
+            }
+            
             // Delete image if exists
             if($model->image)
             {
@@ -212,11 +231,19 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
+        $criteria = new CDbCriteria();
+        $criteria->order = 't.created_at DESC';
+        $criteria->with = array('author');
+        
+        // Aplicar filtro solo si viene el parámetro
+        if(isset($_GET['palabra']) && !empty($_GET['palabra']))
+        {
+            $criteria->condition = 't.title LIKE :palabra';
+            $criteria->params = array(':palabra'=>'%'.$_GET['palabra'].'%');
+        }
+        
         $dataProvider=new CActiveDataProvider('Post', array(
-            'criteria'=>array(
-                'order'=>'t.created_at DESC',
-                'with'=>array('author'),
-            ),
+            'criteria'=>$criteria,
             'pagination'=>array(
                 'pageSize'=>10,
             ),
