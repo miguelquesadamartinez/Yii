@@ -55,6 +55,7 @@ body {
 #mainmenu ul {
   padding: 6px 20px 5px 20px;
   margin: 0px;
+  text-align: center;
 }
 
 #mainmenu ul li {
