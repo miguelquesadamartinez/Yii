@@ -28,6 +28,7 @@ class UserController extends Controller
             array('allow',
                 'actions'=>array('index','view','create','update','delete'),
                 'users'=>array('@'),
+                'expression'=>'User::model()->findByPk(Yii::app()->user->id)->isAdmin()',
             ),
             array('deny',
                 'users'=>array('*'),
