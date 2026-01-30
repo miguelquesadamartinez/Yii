@@ -57,12 +57,6 @@ class PostController extends Controller
             throw new CHttpException(400,'Invalid request.');
         }
         
-        // Verificar que el usuario actual sea el autor del post
-        if($model->author_id != Yii::app()->user->id)
-        {
-            throw new CHttpException(403,'No tienes permiso para ver este post.');
-        }
-        
         $this->render('view',array(
             'model'=>$model,
         ));
