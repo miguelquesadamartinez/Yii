@@ -119,6 +119,15 @@ class User extends CActiveRecord
     }
 
     /**
+     * Verifica si el usuario es administrador
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        return $this->user_type_id == 1;
+    }
+
+    /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * Typical usecase:
