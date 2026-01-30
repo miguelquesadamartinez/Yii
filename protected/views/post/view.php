@@ -7,12 +7,18 @@ $this->breadcrumbs=array(
     $model->title,
 );
 
+$currentUser = User::model()->findByPk(Yii::app()->user->id);
+$canEdit = ($model->author_id == Yii::app()->user->id) || ($currentUser && $currentUser->isAdmin());
+
 $this->menu=array(
     array('label'=>'Listar Posts', 'url'=>array('index')),
     array('label'=>'Crear Post', 'url'=>array('create')),
-    array('label'=>'Actualizar Post', 'url'=>array('update', 'id'=>$model->id)),
-    array('label'=>'Eliminar Post', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'¿Está seguro de eliminar este post?')),
 );
+
+if($canEdit) {
+    $this->menu[] = array('label'=>'Actualizar Post', 'url'=>array('update', 'id'=>$model->id));
+    $this->menu[] = array('label'=>'Eliminar Post', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'¿Está seguro de eliminar este post?'));
+}
 ?>
 
 <h1>Ver Post #<?php echo $model->id; ?></h1>
