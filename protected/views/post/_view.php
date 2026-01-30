@@ -3,9 +3,16 @@
 /* @var $data Post */
 ?>
 
-<div class="view" style="transition: background-color 0.2s; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 4px;"
-     onmouseover="this.style.backgroundColor='#f5f5f5';" 
-     onmouseout="this.style.backgroundColor='white';">
+<?php if($data->author_id == Yii::app()->user->id): ?>
+    <div class="view" style="transition: background-color 0.2s; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 4px;"
+         onmouseover="this.style.backgroundColor='#f5f5f5';" 
+         onmouseout="this.style.backgroundColor='white';">
+<?php else: ?>
+    <div class="view" style="transition: background-color 0.2s; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 4px; cursor: pointer;"
+         onclick="window.location.href='<?php echo $this->createUrl('view', array('slug'=>$data->slug)); ?>';"
+         onmouseover="this.style.backgroundColor='#f5f5f5';" 
+         onmouseout="this.style.backgroundColor='white';">
+<?php endif; ?>
 
     <?php if($data->image): ?>
         <div style="float: left; margin-right: 15px; margin-bottom: 10px;">
@@ -49,8 +56,7 @@
         </div>
     <?php else: ?>
         <div style="margin-top: 10px;">
-            <?php echo CHtml::link('Ver', array('view', 'slug'=>$data->slug), array('class'=>'btn btn-info btn-sm')); ?>
-            <span style="color: #999; font-size: 12px; margin-left: 10px;">Post de <?php echo CHtml::encode($data->author->username); ?></span>
+            <span style="color: #999; font-size: 12px;">Post de <?php echo CHtml::encode($data->author->username); ?> - Click para ver</span>
         </div>
     <?php endif; ?>
 
