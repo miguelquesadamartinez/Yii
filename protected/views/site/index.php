@@ -21,6 +21,6 @@ $this->pageTitle=Yii::app()->name;
     <?php if(Yii::app()->user->isGuest): ?>
     <p style="margin-top: 30px; font-size: 16px;">Por favor, <a href="<?php echo $this->createUrl('site/login'); ?>" style="font-weight: bold; color: #4682b4;">inicia sesión</a> para acceder al sistema.</p>
     <?php else: ?>
-    <p style="margin-top: 30px; font-size: 16px;">Ir a <a href="<?php echo $this->createUrl('user/index'); ?>" style="font-weight: bold; color: #4682b4;">Gestión de Usuarios</a></p>
+    <p style="margin-top: 30px; font-size: 16px;">Ir a <a href="<?php echo $this->createUrl('post/index'); ?>" style="font-weight: bold; color: #4682b4;">Ver Posts</a></p>
     <?php endif; ?>
 </div>

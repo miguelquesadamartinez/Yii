@@ -39,7 +39,8 @@ $this->breadcrumbs=array(
         <?php echo $form->error($model,'password'); ?>
         <p class="hint">
             Usuario: <b>admin</b> / Contraseña: <b>admin123</b><br/>
-            Usuario: <b>demo</b> / Contraseña: <b>demo123</b>
+            Usuario: <b>demo</b> / Contraseña: <b>demo123</b><br/>
+            Usuario: <b>juju</b> / Contraseña: <b>123456</b>
         </p>
     </div>
 
