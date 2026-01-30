@@ -122,9 +122,10 @@ class PostController extends Controller
     public function actionUpdate($id)
     {
         $model=$this->loadModel($id);
+        $currentUser = User::model()->findByPk(Yii::app()->user->id);
         
-        // Verificar que el usuario actual sea el autor del post
-        if($model->author_id != Yii::app()->user->id)
+        // Verificar que el usuario actual sea el autor del post o un administrador
+        if($model->author_id != Yii::app()->user->id && !$currentUser->isAdmin())
         {
             throw new CHttpException(403,'No tienes permiso para editar este post.');
         }
@@ -199,9 +200,10 @@ class PostController extends Controller
         if(Yii::app()->request->isPostRequest)
         {
             $model = $this->loadModel($id);
+            $currentUser = User::model()->findByPk(Yii::app()->user->id);
             
-            // Verificar que el usuario actual sea el autor del post
-            if($model->author_id != Yii::app()->user->id)
+            // Verificar que el usuario actual sea el autor del post o un administrador
+            if($model->author_id != Yii::app()->user->id && !$currentUser->isAdmin())
             {
                 throw new CHttpException(403,'No tienes permiso para eliminar este post.');
             }

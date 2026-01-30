@@ -1,9 +1,11 @@
 <?php
 /* @var $this PostController */
 /* @var $data Post */
+$currentUser = User::model()->findByPk(Yii::app()->user->id);
+$canEdit = ($data->author_id == Yii::app()->user->id) || ($currentUser && $currentUser->isAdmin());
 ?>
 
-<?php if($data->author_id == Yii::app()->user->id): ?>
+<?php if($canEdit): ?>
     <div class="view" style="transition: background-color 0.2s; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 4px;"
          onmouseover="this.style.backgroundColor='#f5f5f5';" 
          onmouseout="this.style.backgroundColor='white';">
@@ -44,7 +46,7 @@
     <?php echo CHtml::encode($data->created_at); ?>
     <br />
 
-    <?php if($data->author_id == Yii::app()->user->id): ?>
+    <?php if($canEdit): ?>
         <div style="margin-top: 10px;">
             <?php echo CHtml::link('Ver', array('view', 'slug'=>$data->slug), array('class'=>'btn btn-info btn-sm')); ?>
             <?php echo CHtml::link('Editar', array('update', 'id'=>$data->id), array('class'=>'btn btn-warning btn-sm')); ?>
@@ -53,6 +55,9 @@
                 'submit'=>array('delete', 'id'=>$data->id),
                 'confirm'=>'¿Estás seguro de que quieres eliminar este post?'
             )); ?>
+            <?php if($data->author_id != Yii::app()->user->id): ?>
+                <span style="color: #ff9800; font-size: 11px; margin-left: 10px;">(Admin: editando post de <?php echo CHtml::encode($data->author->username); ?>)</span>
+            <?php endif; ?>
         </div>
     <?php else: ?>
         <div style="margin-top: 10px;">
