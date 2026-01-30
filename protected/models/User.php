@@ -128,6 +128,24 @@ class User extends CActiveRecord
     }
 
     /**
+     * Verifica si el usuario es editor
+     * @return boolean
+     */
+    public function isEditor()
+    {
+        return $this->user_type_id == 2;
+    }
+
+    /**
+     * Verifica si el usuario es administrador o editor
+     * @return boolean
+     */
+    public function canManageCategories()
+    {
+        return $this->isAdmin() || $this->isEditor();
+    }
+
+    /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * Typical usecase:

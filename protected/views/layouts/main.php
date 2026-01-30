@@ -30,7 +30,7 @@
             'items'=>array(
                 array('label'=>'Inicio', 'url'=>array('/site/index')),
                 array('label'=>'Posts', 'url'=>array('/post/index'), 'visible'=>!Yii::app()->user->isGuest),
-                array('label'=>'Categorías', 'url'=>array('/category/index'), 'visible'=>!Yii::app()->user->isGuest && User::model()->findByPk(Yii::app()->user->id)->isAdmin()),
+                array('label'=>'Categorías', 'url'=>array('/category/index'), 'visible'=>!Yii::app()->user->isGuest && User::model()->findByPk(Yii::app()->user->id)->canManageCategories()),
                 array('label'=>'Usuarios', 'url'=>array('/user/index'), 'visible'=>!Yii::app()->user->isGuest && User::model()->findByPk(Yii::app()->user->id)->isAdmin()),
                 array('label'=>'Tipos de Usuario', 'url'=>array('/userType/index'), 'visible'=>!Yii::app()->user->isGuest && User::model()->findByPk(Yii::app()->user->id)->isAdmin()),
                 array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
