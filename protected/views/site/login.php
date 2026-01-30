@@ -32,13 +32,33 @@ $this->breadcrumbs=array(
 
     <div class="row">
         <?php echo $form->labelEx($model,'password'); ?>
-        <?php echo $form->passwordField($model,'password'); ?>
+        <div style="position: relative; display: inline-block;">
+            <?php echo $form->passwordField($model,'password', array('id'=>'password-field', 'style'=>'padding-right: 35px;')); ?>
+            <button type="button" id="toggle-password" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; font-size: 16px; padding: 0; line-height: 1;" title="Mostrar/Ocultar contraseña">👁️</button>
+        </div>
         <?php echo $form->error($model,'password'); ?>
         <p class="hint">
             Usuario: <b>admin</b> / Contraseña: <b>admin123</b><br/>
             Usuario: <b>demo</b> / Contraseña: <b>demo123</b>
         </p>
     </div>
+
+    <script type="text/javascript">
+    document.getElementById('toggle-password').addEventListener('click', function() {
+        var passwordField = document.getElementById('password-field');
+        var button = this;
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            button.textContent = '🙈';
+            button.title = 'Ocultar contraseña';
+        } else {
+            passwordField.type = 'password';
+            button.textContent = '👁️';
+            button.title = 'Mostrar contraseña';
+        }
+    });
+    </script>
 
     <div class="row rememberMe">
         <?php echo $form->checkBox($model,'rememberMe'); ?>
