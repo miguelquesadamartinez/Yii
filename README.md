@@ -52,17 +52,40 @@ Deberías ver 3 contenedores activos:
 - `yii_db` - Base de datos MySQL
 - `yii_phpmyadmin` - Interfaz web para MySQL
 
+### 4. Ejecutar migraciones de base de datos (Opcional)
+
+El proyecto ya inicializa la base de datos automáticamente con `database/init.sql`, pero también cuenta con un sistema de migraciones de Yii. Para ejecutar migraciones:
+
+```powershell
+# Acceder al contenedor web
+docker exec -it yii_web bash
+
+# Dentro del contenedor, ejecutar migraciones
+cd /var/www/html/protected
+php yiic.php migrate
+```
+
+Las migraciones disponibles están en `protected/migrations/`:
+
+- `m260119_183948_create_users_table.php` - Tabla de usuarios
+- `m260119_174541_create_posts_table.php` - Tabla de posts
+- `m260119_183949_create_categories_table.php` - Tabla de categorías
+- `m260119_190954_create_user_types_table.php` - Tabla de tipos de usuario
+- `m260119_184037_add_category_to_posts.php` - Agregar categoría a posts
+- `m260119_192827_add_image_to_posts.php` - Agregar imagen a posts
+- `m260123_000000_add_slug_to_posts.php` - Agregar slug a posts
+
 ## 🌐 Acceso a la Aplicación
 
 ### Aplicación Web
 
-- **URL**: http://localhost:8080
+- **URL**: http://localhost:8082
 - **Usuario admin**: `admin` / `admin123`
 - **Usuario demo**: `demo` / `demo123`
 
 ### phpMyAdmin (Gestión de Base de Datos)
 
-- **URL**: http://localhost:8081
+- **URL**: http://localhost:8083
 - **Servidor**: `db`
 - **Usuario**: `yii_user`
 - **Contraseña**: `yii_password`
@@ -176,6 +199,39 @@ docker exec -it yii_web bash
 docker exec -it yii_db mysql -u yii_user -pyii_password yii_users
 ```
 
+### Crear una nueva migración
+
+```powershell
+# Acceder al contenedor
+docker exec -it yii_web bash
+
+# Crear migración
+cd /var/www/html/protected
+php yiic.php migrate create nombre_descriptivo_de_migracion
+```
+
+### Ejecutar migraciones
+
+```powershell
+# Ver estado de migraciones
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate history
+
+# Aplicar todas las migraciones pendientes
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate
+
+# Aplicar migraciones específicas (ej: 3 migraciones)
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate up 3
+
+# Revertir última migración
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate down
+
+# Revertir migraciones específicas (ej: 2 migraciones)
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate down 2
+
+# Marcar migración como aplicada (sin ejecutar)
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate mark m260123_000000_add_column_example
+```
+
 ## 🗄️ Base de Datos
 
 ### Tabla `users`
@@ -198,10 +254,41 @@ docker exec -it yii_db mysql -u yii_user -pyii_password yii_users
 Usuario: admin
 Contraseña: admin123
 Email: admin@example.com
+Tipo: Administrador (user_type_id: 1)
 
 Usuario: demo
 Contraseña: demo123
 Email: demo@example.com
+Tipo: Editor (user_type_id: 2)
+```
+
+**Contraseñas hasheadas (MD5):**
+
+- `admin123` → `0192023a7bbd73250516f069df18b500`
+- `demo123` → `fe01ce2a7fbac8fafaed7c982a04e229`
+
+### Esquema de Migraciones
+
+El proyecto usa el sistema de migraciones de Yii para gestionar cambios en la base de datos:
+
+1. **Tabla de control**: `migration` - Rastrea qué migraciones se han ejecutado
+2. **Directorio**: `protected/migrations/` - Contiene todos los archivos de migración
+3. **Nomenclatura**: `mYYMMDD_HHMMSS_descripcion.php` (ej: `m260119_183948_create_users_table.php`)
+
+### Comandos útiles de migración
+
+```powershell
+# Ver lista de migraciones disponibles
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate
+
+# Ver historial de migraciones aplicadas
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate history
+
+# Ver migraciones nuevas pendientes
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate new
+
+# Refrescar/recrear base de datos completa
+docker exec -it yii_web php /var/www/html/protected/yiic.php migrate fresh
 ```
 
 ## 🔐 Seguridad
@@ -266,23 +353,9 @@ Accede a http://localhost:8080/index.php?r=gii
 - [Yii Framework 1.1 - API Reference](https://www.yiiframework.com/doc/api/1.1/)
 - [Docker Documentation](https://docs.docker.com/)
 
-## 🤝 Contribuir
-
-Si encuentras algún error o quieres mejorar la aplicación:
-
-1. Haz un fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/amazing-feature`)
-3. Commit tus cambios (`git commit -m 'Add amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
-5. Abre un Pull Request
-
 ## 📄 Licencia
 
 Este proyecto es de código abierto y está disponible bajo la licencia MIT.
-
-## 👨‍💻 Autor
-
-Desarrollado para demostración y aprendizaje de Yii Framework 1.1.24
 
 ---
 
