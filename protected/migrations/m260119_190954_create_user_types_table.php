@@ -13,7 +13,6 @@ class m260119_190954_create_user_types_table extends CDbMigration
 			'updated_at' => 'datetime NOT NULL',
 		), 'ENGINE=InnoDB DEFAULT CHARSET=utf8');
 		
-		// Insertar tipos de usuario por defecto
 		$this->insert('user_types', array(
 			'name' => 'Administrador',
 			'description' => 'Usuario con acceso completo al sistema',
@@ -36,7 +35,7 @@ class m260119_190954_create_user_types_table extends CDbMigration
 		));
 		
 		// Agregar columna user_type_id a la tabla users
-		$this->addColumn('users', 'user_type_id', 'int(11) DEFAULT NULL AFTER status');
+		//$this->addColumn('users', 'user_type_id', 'int(11) DEFAULT NULL AFTER status');
 		
 		// Agregar índice y clave foránea
 		$this->createIndex('idx_user_type_id', 'users', 'user_type_id');
