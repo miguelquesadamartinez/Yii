@@ -20,10 +20,16 @@ Aplicación completa de gestión de usuarios desarrollada con Yii Framework 1.1.
 
 ## 🛠️ Instalación
 
-### 1. Clonar o descargar el proyecto
+### 1. Clonar el proyecto con Git
 
-```bash
-cd c:\Users\migue\Documents\___CodeS\__Learning\Yii
+```powershell
+# Clonar el repositorio
+git clone <URL_DEL_REPOSITORIO> Yii
+cd Yii
+
+# O si ya tienes el repositorio remoto configurado
+git clone https://github.com/tu-usuario/yii-project.git
+cd yii-project
 ```
 
 ### 2. Construir y levantar los contenedores
